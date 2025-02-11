@@ -251,7 +251,9 @@ public class UniqueIndex<A,O> extends AbstractAttributeIndex<A,O> implements OnH
                                         "', potentially causing inconsistencies between indexes. " +
                                         "UniqueIndex should not be used with attributes which do not uniquely identify objects. " +
                                         "Problematic attribute value: '" + attributeValue + "', " +
-                                        "problematic duplicate object: " + object);
+                                        "problematic duplicate object: " + object + ", " +
+                                        "problematic existing object: " + existingValue
+                        );
                     }
                     modified = true;
 
