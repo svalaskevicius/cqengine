@@ -308,6 +308,14 @@ public class RadixTreeIndex<A extends CharSequence, O> extends AbstractAttribute
      * {@inheritDoc}
      */
     @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(ObjectStore<O> objectStore, QueryOptions queryOptions) {
         addAll(ObjectSet.fromObjectStore(objectStore, queryOptions), queryOptions);
     }

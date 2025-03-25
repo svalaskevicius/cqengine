@@ -595,6 +595,16 @@ public class SQLiteIndex<A extends Comparable<A>, O, K> extends AbstractAttribut
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
+
+
+    /**
      * Utility method that transforms an {@link Iterable} of domain objects into an {@link Iterable} over the objects ids.
      *
      * @param objects {@link Iterable} of domain objects.

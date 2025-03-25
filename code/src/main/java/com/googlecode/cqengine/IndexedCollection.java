@@ -123,6 +123,15 @@ public interface IndexedCollection<O> extends Set<O>, QueryEngine<O> {
      */
     boolean update(Iterable<O> objectsToRemove, Iterable<O> objectsToAdd, QueryOptions queryOptions);
 
+    O getByPrimaryKey(Object key, QueryOptions queryOptions);
+
+    boolean removeByPrimaryKey(Object key, QueryOptions queryOptions);
+
+    /**
+     * @return True if the collection was modified as a result, false if it was not
+     */
+    boolean replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions);
+
     /**
      * @see #addIndex(Index, QueryOptions)
      */

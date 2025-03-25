@@ -104,7 +104,7 @@ public class FallbackIndex<O> implements Index<O> {
                 }
                 else if (query instanceof None) {
                     return Collections.<O>emptyList().iterator();
-                } 
+                }
                 else if (query instanceof ComparativeQuery) {
                     return ((ComparativeQuery<O, ?>)query).getMatches(objectSet, queryOptions).iterator();
                 }
@@ -175,6 +175,14 @@ public class FallbackIndex<O> implements Index<O> {
     @Override
     public boolean removeAll(ObjectSet<O> objectSet, QueryOptions queryOptions) {
         // No need to take any action
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
         return false;
     }
 

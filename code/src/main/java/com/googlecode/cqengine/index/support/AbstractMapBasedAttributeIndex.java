@@ -135,6 +135,14 @@ public abstract class AbstractMapBasedAttributeIndex<A, O, MapType extends Concu
      * {@inheritDoc}
      */
     @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(ObjectStore<O> objectStore, QueryOptions queryOptions) {
         addAll(ObjectSet.fromObjectStore(objectStore, queryOptions), queryOptions);
     }

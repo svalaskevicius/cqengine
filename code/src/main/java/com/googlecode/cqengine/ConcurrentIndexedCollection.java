@@ -157,6 +157,44 @@ public class ConcurrentIndexedCollection<O> implements IndexedCollection<O> {
      * {@inheritDoc}
      */
     @Override
+    public O getByPrimaryKey(Object key, QueryOptions queryOptions) {
+        return objectStore.getByPrimaryKey(key, queryOptions);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeByPrimaryKey(Object key, QueryOptions queryOptions) {
+        var prev = objectStore.removeByPrimaryKey(key, queryOptions);
+        if (prev != null) {
+            indexEngine.removeAll(ObjectSet.fromCollection(singleton(prev)), queryOptions);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions) {
+        indexEngine.addAll(ObjectSet.fromCollection(singleton(value)), queryOptions);
+        var prev = objectStore.replaceByPrimaryKey(key, value, queryOptions);
+        if (prev != null) {
+            indexEngine.removePrevKeepNew(prev, value, queryOptions);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean update(Iterable<O> objectsToRemove, Iterable<O> objectsToAdd, QueryOptions queryOptions) {
         queryOptions = openRequestScopeResourcesIfNecessary(queryOptions);
         try {

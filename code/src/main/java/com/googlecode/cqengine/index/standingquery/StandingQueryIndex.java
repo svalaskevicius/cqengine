@@ -165,6 +165,14 @@ public class StandingQueryIndex<O> implements Index<O>, OnHeapTypeIndex {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
      * @param queryOptions
      */
     @Override

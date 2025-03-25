@@ -255,6 +255,14 @@ public abstract class PartialIndex<A, O, I extends AttributeIndex<A, O>> impleme
         return backingIndex().removeAll(ObjectSet.fromCollection(matchingSubset), queryOptions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
     @Override
     public void clear(QueryOptions queryOptions) {
         backingIndex().clear(queryOptions);

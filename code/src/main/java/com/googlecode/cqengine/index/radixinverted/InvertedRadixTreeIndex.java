@@ -83,7 +83,7 @@ public class InvertedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
      */
     protected InvertedRadixTreeIndex(Attribute<O, A> attribute, NodeFactory nodeFactory) {
         super(attribute, new HashSet<Class<? extends Query>>() {/**
-             * 
+             *
              */
             private static final long serialVersionUID = 1L;
 
@@ -468,6 +468,14 @@ public class InvertedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
         finally {
             objectSet.close();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
     }
 
     /**

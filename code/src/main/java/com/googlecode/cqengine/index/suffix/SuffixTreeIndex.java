@@ -108,7 +108,7 @@ public class SuffixTreeIndex<A extends CharSequence, O> extends AbstractAttribut
 
     @Override
     public ResultSet<O> retrieve(final Query<O> query, final QueryOptions queryOptions) {
-        final SuffixTree<StoredResultSet<O>> tree = this.tree;        
+        final SuffixTree<StoredResultSet<O>> tree = this.tree;
         Class<?> queryClass = query.getClass();
         if (queryClass.equals(Equal.class)) {
             @SuppressWarnings("unchecked")
@@ -393,6 +393,14 @@ public class SuffixTreeIndex<A extends CharSequence, O> extends AbstractAttribut
         finally {
             objectSet.close();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
     }
 
     /**

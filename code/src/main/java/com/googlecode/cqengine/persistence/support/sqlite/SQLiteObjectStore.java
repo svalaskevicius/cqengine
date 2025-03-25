@@ -155,6 +155,31 @@ public class SQLiteObjectStore<O, A extends Comparable<A>> implements ObjectStor
         return backingIndex.removeAll(ObjectSet.fromCollection(objects), queryOptions);
     }
 
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O getByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O removeByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public void clear(QueryOptions queryOptions) {
         backingIndex.clear(queryOptions);

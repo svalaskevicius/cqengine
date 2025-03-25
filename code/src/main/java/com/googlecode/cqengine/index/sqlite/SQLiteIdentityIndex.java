@@ -118,6 +118,14 @@ public class SQLiteIdentityIndex<A extends Comparable<A>, O> implements Identity
         return sqLiteIndex.removeAll(objectSet, queryOptions);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
     @Override
     public void clear(QueryOptions queryOptions) {
         sqLiteIndex.clear(queryOptions);

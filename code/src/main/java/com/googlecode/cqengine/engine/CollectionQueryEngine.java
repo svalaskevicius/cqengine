@@ -1399,6 +1399,14 @@ public class CollectionQueryEngine<O> implements QueryEngineInternal<O> {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
      * @param queryOptions
      */
     @Override

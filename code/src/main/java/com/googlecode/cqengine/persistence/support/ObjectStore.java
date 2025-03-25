@@ -48,5 +48,11 @@ public interface ObjectStore<O> {
 
     boolean removeAll(Collection<?> c, QueryOptions queryOptions);
 
+    O getByPrimaryKey(Object key, QueryOptions queryOptions);
+
+    O removeByPrimaryKey(Object key, QueryOptions queryOptions);
+
+    O replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions);
+
     void clear(QueryOptions queryOptions);
 }

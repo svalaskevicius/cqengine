@@ -155,6 +155,31 @@ public class FilteredObjectStore<O> implements ObjectStore<O> {
      * @throws UnsupportedOperationException Always.
      */
     @Override
+    public O getByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O removeByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
     public void clear(QueryOptions queryOptions) {
         throw new UnsupportedOperationException();
     }

@@ -104,6 +104,31 @@ public class CollectionWrappingObjectStore<O> implements ObjectStore<O> {
         return backingCollection.retainAll(c);
     }
 
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O getByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O removeByPrimaryKey(Object key, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * @throws UnsupportedOperationException Always.
+     */
+    @Override
+    public O replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean removeAll(Collection<?> c, QueryOptions queryOptions) {
         // The following code is a workaround for a performance bottleneck in JDK 8 and earlier.
