@@ -261,10 +261,10 @@ public abstract class PartialIndex<A, O, I extends AttributeIndex<A, O>> impleme
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         if (filterQuery.matches(prevValue, queryOptions)) {
             if (filterQuery.matches(newValue, queryOptions)) {
-                return backingIndex().removePrevKeepNew(prevValue, newValue, queryOptions);
+                return backingIndex().replacePreviousValueWithNewOne(prevValue, newValue, queryOptions);
             } else {
                 return backingIndex().removeAll(ObjectSet.fromCollection(singleton(prevValue)), queryOptions);
             }

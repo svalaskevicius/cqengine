@@ -354,7 +354,7 @@ public class ReversedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         boolean modified = false;
         Iterable<A> prevValues = getAttribute().getValues(prevValue, queryOptions);
         Iterable<A> newValues = getAttribute().getValues(newValue, queryOptions);

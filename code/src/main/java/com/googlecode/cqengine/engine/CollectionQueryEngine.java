@@ -1401,13 +1401,13 @@ public class CollectionQueryEngine<O> implements QueryEngineInternal<O> {
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         ensureMutable();
         final FlagHolder modified = new FlagHolder();
         forEachIndexDo(new IndexOperation<O>() {
             @Override
             public boolean perform(Index<O> index) {
-                modified.value |= index.removePrevKeepNew(prevValue, newValue, queryOptions);
+                modified.value |= index.replacePreviousValueWithNewOne(prevValue, newValue, queryOptions);
                 return true;
             }
         });

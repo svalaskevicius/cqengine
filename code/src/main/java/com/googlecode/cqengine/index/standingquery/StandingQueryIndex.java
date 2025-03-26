@@ -166,7 +166,7 @@ public class StandingQueryIndex<O> implements Index<O>, OnHeapTypeIndex {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+	public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
 		boolean modified = false;
 		if (prevValue != newValue) {
       // TODO : should this be moved deeper and made atomic?

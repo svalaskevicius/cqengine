@@ -182,7 +182,7 @@ public class FallbackIndex<O> implements Index<O> {
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         return false;
     }
 

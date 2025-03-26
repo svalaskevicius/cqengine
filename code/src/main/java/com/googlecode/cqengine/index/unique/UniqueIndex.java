@@ -291,7 +291,7 @@ public class UniqueIndex<A,O> extends AbstractAttributeIndex<A,O> implements OnH
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         boolean modified = false;
         ConcurrentMap<A, O> indexMap = this.indexMap;
         Iterable<A> prevValues = getAttribute().getValues(prevValue, queryOptions);
@@ -302,7 +302,20 @@ public class UniqueIndex<A,O> extends AbstractAttributeIndex<A,O> implements OnH
         }
         for (A attributeValue : newValues) {
             toRemove.remove(attributeValue);
-            modified |= (indexMap.put(attributeValue, newValue) != null);
+            O existingValue = indexMap.put(attributeValue, newValue);
+            if (existingValue != null && !existingValue.equals(newValue) && !existingValue.equals(prevValue)) {
+                throw new UniqueConstraintViolatedException(
+                        "The application has attempted to add a duplicate object to the UniqueIndex on attribute '"
+                                + attribute.getAttributeName() +
+                                "', potentially causing inconsistencies between indexes. " +
+                                "UniqueIndex should not be used with attributes which do not uniquely identify objects. " +
+                                "Problematic attribute value: '" + attributeValue + "', " +
+                                "problematic duplicate object: " + newValue + ", " +
+                                "problematic existing object: " + existingValue + ", " +
+                                "acceptable existing value (known previous value): " + prevValue
+                );
+            }
+            modified = true;
         }
 
         for (A attributeValue : toRemove) {

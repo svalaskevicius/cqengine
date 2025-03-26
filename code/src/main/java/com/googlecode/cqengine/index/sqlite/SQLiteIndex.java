@@ -599,7 +599,7 @@ public class SQLiteIndex<A extends Comparable<A>, O, K> extends AbstractAttribut
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
         // TODO: make atomic
         return removeAll(ObjectSet.fromCollection(singleton(prevValue)), queryOptions) ||
                addAll(ObjectSet.fromCollection(singleton(newValue)), queryOptions);

@@ -177,8 +177,8 @@ public abstract class SimplifiedSQLiteIndex<A extends Comparable<A>, O, K extend
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
-        return backingIndex().removePrevKeepNew(prevValue, newValue, queryOptions);
+    public boolean replacePreviousValueWithNewOne(O prevValue, O newValue, QueryOptions queryOptions) {
+        return backingIndex().replacePreviousValueWithNewOne(prevValue, newValue, queryOptions);
     }
 
     @Override
