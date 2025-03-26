@@ -122,8 +122,8 @@ public class SQLiteIdentityIndex<A extends Comparable<A>, O> implements Identity
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        return sqLiteIndex.removePrevKeepNew(prevValue, newValue, queryOptions);
     }
 
     @Override

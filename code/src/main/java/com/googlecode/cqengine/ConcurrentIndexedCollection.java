@@ -166,7 +166,7 @@ public class ConcurrentIndexedCollection<O> implements IndexedCollection<O> {
      */
     @Override
     public boolean removeByPrimaryKey(Object key, QueryOptions queryOptions) {
-        var prev = objectStore.removeByPrimaryKey(key, queryOptions);
+        O prev = objectStore.removeByPrimaryKey(key, queryOptions);
         if (prev != null) {
             indexEngine.removeAll(ObjectSet.fromCollection(singleton(prev)), queryOptions);
             return true;
@@ -182,7 +182,7 @@ public class ConcurrentIndexedCollection<O> implements IndexedCollection<O> {
     @Override
     public boolean replaceByPrimaryKey(Object key, O value, QueryOptions queryOptions) {
         indexEngine.addAll(ObjectSet.fromCollection(singleton(value)), queryOptions);
-        var prev = objectStore.replaceByPrimaryKey(key, value, queryOptions);
+        O prev = objectStore.replaceByPrimaryKey(key, value, queryOptions);
         if (prev != null) {
             indexEngine.removePrevKeepNew(prev, value, queryOptions);
             return true;

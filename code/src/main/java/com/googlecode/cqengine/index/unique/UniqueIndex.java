@@ -291,8 +291,24 @@ public class UniqueIndex<A,O> extends AbstractAttributeIndex<A,O> implements OnH
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        boolean modified = false;
+        ConcurrentMap<A, O> indexMap = this.indexMap;
+        Iterable<A> prevValues = getAttribute().getValues(prevValue, queryOptions);
+        Iterable<A> newValues = getAttribute().getValues(newValue, queryOptions);
+        java.util.Set<A> toRemove = new HashSet<A>();
+        for (A attributeValue : prevValues) {
+            toRemove.add(attributeValue);
+        }
+        for (A attributeValue : newValues) {
+            toRemove.remove(attributeValue);
+            modified |= (indexMap.put(attributeValue, newValue) != null);
+        }
+
+        for (A attributeValue : toRemove) {
+            modified |= (indexMap.remove(attributeValue) != null);
+        }
+        return modified;
     }
 
     /**

@@ -31,6 +31,8 @@ import com.googlecode.cqengine.query.option.QueryOptions;
 import com.googlecode.cqengine.resultset.ResultSet;
 import com.googlecode.cqengine.resultset.common.WrappedResultSet;
 
+import static java.util.Collections.singleton;
+
 import java.util.*;
 
 /**
@@ -259,8 +261,21 @@ public abstract class PartialIndex<A, O, I extends AttributeIndex<A, O>> impleme
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        if (filterQuery.matches(prevValue, queryOptions)) {
+            if (filterQuery.matches(newValue, queryOptions)) {
+                return backingIndex().removePrevKeepNew(prevValue, newValue, queryOptions);
+            } else {
+                return backingIndex().removeAll(ObjectSet.fromCollection(singleton(prevValue)), queryOptions);
+            }
+        } else {
+            if (filterQuery.matches(newValue, queryOptions)) {
+                return backingIndex().addAll(ObjectSet.fromCollection(singleton(newValue)), queryOptions);
+            } else {
+                return false;
+            }
+        }
+
     }
 
     @Override

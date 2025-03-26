@@ -73,23 +73,7 @@ public abstract class AbstractMapBasedAttributeIndex<A, O, MapType extends Concu
             for (O object : objectSet) {
                 Iterable<A> attributeValues = getAttribute().getValues(object, queryOptions);
                 for (A attributeValue : attributeValues) {
-
-                    // Replace attributeValue with quantized value if applicable...
-                    attributeValue = getQuantizedValue(attributeValue);
-
-                    // Look up StoredResultSet for the value...
-                    StoredResultSet<O> valueSet = indexMap.get(attributeValue);
-                    if (valueSet == null) {
-                        // No StoredResultSet, create and add one...
-                        valueSet = valueSetFactory.create();
-                        StoredResultSet<O> existingValueSet = indexMap.putIfAbsent(attributeValue, valueSet);
-                        if (existingValueSet != null) {
-                            // Another thread won race to add new value set, use that one...
-                            valueSet = existingValueSet;
-                        }
-                    }
-                    // Add the object to the StoredResultSet for this value...
-                    modified |= valueSet.add(object);
+                    modified |= addAttributeValue(getQuantizedValue(attributeValue), object);
                 }
             }
             return modified;
@@ -110,18 +94,7 @@ public abstract class AbstractMapBasedAttributeIndex<A, O, MapType extends Concu
             for (O object : objectSet) {
                 Iterable<A> attributeValues = getAttribute().getValues(object, queryOptions);
                 for (A attributeValue : attributeValues) {
-
-                    // Replace attributeValue with quantized value if applicable...
-                    attributeValue = getQuantizedValue(attributeValue);
-
-                    StoredResultSet<O> valueSet = indexMap.get(attributeValue);
-                    if (valueSet == null) {
-                        continue;
-                    }
-                    modified |= valueSet.remove(object);
-                    if (valueSet.isEmpty()) {
-                        indexMap.remove(attributeValue);
-                    }
+                    modified |= removeAttributeValue(getQuantizedValue(attributeValue), object);
                 }
             }
             return modified;
@@ -131,12 +104,57 @@ public abstract class AbstractMapBasedAttributeIndex<A, O, MapType extends Concu
         }
     }
 
+    private boolean addAttributeValue(A attributeValue, O object) {
+        StoredResultSet<O> valueSet = indexMap.get(attributeValue);
+        if (valueSet == null) {
+            // No StoredResultSet, create and add one...
+            valueSet = valueSetFactory.create();
+            StoredResultSet<O> existingValueSet = indexMap.putIfAbsent(attributeValue, valueSet);
+            if (existingValueSet != null) {
+                // Another thread won race to add new value set, use that one...
+                valueSet = existingValueSet;
+            }
+        }
+        // Add the object to the StoredResultSet for this value...
+        return valueSet.add(object);
+    }
+
+    private boolean removeAttributeValue(A attributeValue, O object) {
+        boolean modified = false;
+        StoredResultSet<O> valueSet = indexMap.get(attributeValue);
+        if (valueSet == null) {
+            return false;
+        }
+        modified |= valueSet.remove(object);
+        if (valueSet.isEmpty()) {
+            indexMap.remove(attributeValue);
+        }
+        return modified;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        boolean modified = false;
+        Iterable<A> prevValues = getAttribute().getValues(prevValue, queryOptions);
+        Iterable<A> newValues = getAttribute().getValues(newValue, queryOptions);
+        java.util.Set<A> toRemove = new java.util.HashSet<A>();
+        for (A attributeValue : prevValues) {
+            attributeValue = getQuantizedValue(attributeValue);
+            toRemove.add(attributeValue);
+        }
+        for (A attributeValue : newValues) {
+            attributeValue = getQuantizedValue(attributeValue);
+            toRemove.remove(attributeValue);
+            modified |= addAttributeValue(attributeValue, newValue);
+        }
+
+        for (A attributeValue : toRemove) {
+            modified |= removeAttributeValue(attributeValue, prevValue);
+        }
+        return modified;
     }
 
     /**

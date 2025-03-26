@@ -49,6 +49,7 @@ import static com.googlecode.cqengine.index.sqlite.support.DBQueries.Row;
 import static com.googlecode.cqengine.index.sqlite.support.DBUtils.sanitizeForTableName;
 import static com.googlecode.cqengine.index.sqlite.support.SQLiteIndexFlags.BulkImportExternallyManged.LAST;
 import static com.googlecode.cqengine.query.QueryFactory.*;
+import static java.util.Collections.singleton;
 
 /**
  * An index backed by a table in a SQLite database.
@@ -598,8 +599,10 @@ public class SQLiteIndex<A extends Comparable<A>, O, K> extends AbstractAttribut
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        // TODO: make atomic
+        return removeAll(ObjectSet.fromCollection(singleton(prevValue)), queryOptions) ||
+               addAll(ObjectSet.fromCollection(singleton(newValue)), queryOptions);
     }
 
 

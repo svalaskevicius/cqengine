@@ -40,7 +40,7 @@ public interface ModificationListener<O> {
      */
     public boolean removeAll(ObjectSet<O> objectSet, QueryOptions queryOptions);
 
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions);
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions);
 
     /**
      * Notifies the listener that all objects have been removed from the collection, and so it can take action

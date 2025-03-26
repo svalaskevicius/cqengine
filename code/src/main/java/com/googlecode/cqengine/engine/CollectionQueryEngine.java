@@ -1401,8 +1401,17 @@ public class CollectionQueryEngine<O> implements QueryEngineInternal<O> {
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        ensureMutable();
+        final FlagHolder modified = new FlagHolder();
+        forEachIndexDo(new IndexOperation<O>() {
+            @Override
+            public boolean perform(Index<O> index) {
+                modified.value |= index.removePrevKeepNew(prevValue, newValue, queryOptions);
+                return true;
+            }
+        });
+        return modified.value;
     }
 
     /**

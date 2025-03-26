@@ -290,20 +290,7 @@ public class ReversedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
             for (O object : objectSet) {
                 Iterable<A> attributeValues = getAttribute().getValues(object, queryOptions);
                 for (A attributeValue : attributeValues) {
-
-                    // Look up StoredResultSet for the value...
-                    StoredResultSet<O> valueSet = tree.getValueForExactKey(attributeValue);
-                    if (valueSet == null) {
-                        // No StoredResultSet, create and add one...
-                        valueSet = createValueSet();
-                        StoredResultSet<O> existingValueSet = tree.putIfAbsent(attributeValue, valueSet);
-                        if (existingValueSet != null) {
-                            // Another thread won race to add new value set, use that one...
-                            valueSet = existingValueSet;
-                        }
-                    }
-                    // Add the object to the StoredResultSet for this value...
-                    modified |= valueSet.add(object);
+                    modified |= addAttributeValue(attributeValue, object);
                 }
             }
             return modified;
@@ -324,14 +311,7 @@ public class ReversedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
             for (O object : objectSet) {
                 Iterable<A> attributeValues = getAttribute().getValues(object, queryOptions);
                 for (A attributeValue : attributeValues) {
-                    StoredResultSet<O> valueSet = tree.getValueForExactKey(attributeValue);
-                    if (valueSet == null) {
-                        continue;
-                    }
-                    modified |= valueSet.remove(object);
-                    if (valueSet.isEmpty()) {
-                        tree.remove(attributeValue);
-                    }
+                    modified |= removeAttributeValue(attributeValue, object);
                 }
             }
             return modified;
@@ -341,12 +321,56 @@ public class ReversedRadixTreeIndex<A extends CharSequence, O> extends AbstractA
         }
     }
 
+    private boolean addAttributeValue(A attributeValue, O object) {
+
+        // Look up StoredResultSet for the value...
+        StoredResultSet<O> valueSet = tree.getValueForExactKey(attributeValue);
+        if (valueSet == null) {
+            // No StoredResultSet, create and add one...
+            valueSet = createValueSet();
+            StoredResultSet<O> existingValueSet = tree.putIfAbsent(attributeValue, valueSet);
+            if (existingValueSet != null) {
+                // Another thread won race to add new value set, use that one...
+                valueSet = existingValueSet;
+            }
+        }
+        // Add the object to the StoredResultSet for this value...
+        return valueSet.add(object);
+    }
+
+    private boolean removeAttributeValue(A attributeValue, O object) {
+        StoredResultSet<O> valueSet = tree.getValueForExactKey(attributeValue);
+        if (valueSet == null) {
+            return false;
+        }
+        boolean modified = valueSet.remove(object);
+        if (valueSet.isEmpty()) {
+            tree.remove(attributeValue);
+        }
+        return modified;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean removePrevKeepNew(O prev, O value, QueryOptions queryOptions) {
-        return false;
+    public boolean removePrevKeepNew(O prevValue, O newValue, QueryOptions queryOptions) {
+        boolean modified = false;
+        Iterable<A> prevValues = getAttribute().getValues(prevValue, queryOptions);
+        Iterable<A> newValues = getAttribute().getValues(newValue, queryOptions);
+        Set<A> toRemove = new java.util.HashSet<A>();
+        for (A attributeValue : prevValues) {
+            toRemove.add(attributeValue);
+        }
+        for (A attributeValue : newValues) {
+            toRemove.remove(attributeValue);
+            modified |= addAttributeValue(attributeValue, newValue);
+        }
+
+        for (A attributeValue : toRemove) {
+            modified |= removeAttributeValue(attributeValue, prevValue);
+        }
+        return modified;
     }
 
     /**
