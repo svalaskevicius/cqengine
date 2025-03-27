@@ -184,10 +184,10 @@ public class ConcurrentIndexedCollection<O> implements IndexedCollection<O> {
         O prev = objectStore.replaceByPrimaryKey(key, value, queryOptions);
         if (prev != null) {
             indexEngine.replacePreviousValueWithNewOne(prev, value, queryOptions);
-            return true;
         } else {
-            return false;
+            indexEngine.addAll(ObjectSet.fromCollection(singleton(value)), queryOptions);
         }
+        return true;
     }
 
     /**
